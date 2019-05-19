@@ -84,7 +84,7 @@
 <p align="center">
 	<img src="https://github.com/Peiqiye/image/blob/master/时间戳.png" alt="Sample"  width="350" height="540">
 	<p align="center">
-		<em>总体界面</em>
+		<em>时间戳</em>
 	</p>
 </p>  
 
@@ -212,11 +212,27 @@ onQueryTextSubmit和onQueryTextChange两个方法是实现接口必须写的方�
 
 搜索演示：  
 
-图片4  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/查询界面.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>查询界面</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/查询.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>查询</em>
+	</p>
+</p> 
 
 (3)UI美化  
 将安卓自带功能图标都换成自己的图标，将主体颜色换为白色。
-
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/UI美化.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>UI美化</em>
+	</p>
+</p> 
 (4)改变文本背景颜色<br>
 创建数据库添加颜色字段  
 
@@ -454,7 +470,27 @@ editor_options_menu.xml中增加颜色盘的图标。
                 android:windowSoftInputMode="stateVisible"/>    
 
 演示效果：  
-图5  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/背景颜色1.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>背景颜色1</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/选择背景颜色.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>选择背景颜色</em>
+	</p>
+</p>   
+
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/保存背景颜色.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>保存背景颜色</em>
+	</p>
+</p> 
+
+ 
 
 (5)笔记导出到本地<br>
 在菜单栏editor_options_menu.xml中添加导出选项  
@@ -620,8 +656,38 @@ AndroidManifest.xml中加入定义
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
 设置了一个flag用于判断是否是点击导出按钮，是点击按钮，则flag设置为true，可以进行文件导出，否则flag为默认的false，判断语句为假，不能执行到导出文件的操作。  
-效果演示：  
-图6  
+效果演示：   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/导出1.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>导出</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/导出命名.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>导出命名</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/导出成功.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>导出成功</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/导出目录.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>导出目录</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/查看导出文件.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>查看导出文件</em>
+	</p>
+</p> 
+ 
 
 (6)对笔记进行排序<br>
    *按创建时间排序<br>
@@ -709,7 +775,30 @@ list_options_menu.xml中添加：
             
 效果演示：  
 
-图7  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/排序.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>排序</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/按创建时间排序.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>按创建时间排序</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/按修改时间排序.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>按修改时间排序</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/按颜色分类排序.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>按颜色分类排序</em>
+	</p>
+</p> 
 
 (7)选择字体大小与颜色<br>   
 在editor_options_menu.xml中添加：  
@@ -792,7 +881,36 @@ NteEditor.java中添加case:
 其他步骤与背景颜色类似，代码省略。
 效果演示：  
 
-图8  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/字体颜色大小.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>字体颜色大小</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/字体大小.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>字体大小</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/字体颜色.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>字体颜色</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/改变字体大小.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>改变字体大小</em>
+	</p>
+</p>  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/改变字体颜色.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>改变字体颜色</em>
+	</p>
+</p>
 
 
 
