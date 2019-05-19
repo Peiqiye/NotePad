@@ -3,12 +3,14 @@
 (2)查询功能（按名称查询）<br>
 (3)UI美化<br>
 (4)改变文本背景颜色<br>
-(5)改变文本字体大小与颜色<br>
-(6)笔记导出到本地<br>
-(7)对笔记进行排序<br>
+(5)笔记导出到本地<br>
+(6)对笔记进行排序<br>
    *按创建时间排序<br>
    *按修改时间排序<br>
-   *按背景颜色排序<br>
+   *按背景颜色排序<br>    
+   
+(7)选择字体大小与颜色<br>  
+   
 
 主要文件目录：<br>
 图1图2:文件目录两张<br>
@@ -42,7 +44,7 @@
              private static final String[] PROJECTION = new String[] {
                         NotePad.Notes._ID, // 0
                         NotePad.Notes.COLUMN_NAME_TITLE, // 1
-                        NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,  //加入修改时间的显示
+                        NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,  //加入修改时间的显示 
                 };,
                 
 通过Cursor将数据从数据库中读出
@@ -449,15 +451,343 @@ editor_options_menu.xml中增加颜色盘的图标。
 演示效果：  
 图5  
 
+(5)笔记导出到本地<br>
+在菜单栏editor_options_menu.xml中添加导出选项  
+
+    <item android:id="@+id/menu_output"
+              android:title="@string/menu_output"/>
+
+在NoteEditor中找到onOptionsItemSelected()方法，在菜单的switch中添加：  
+
+    case R.id.menu_output:
+            outputNote();
+            break;
+在NoteEditor中添加函数outputNote()：  
+ 
+      private final void outputNote() {
+            Intent intent = new Intent(null,mUri);
+            intent.setClass(NoteEditor.this,OutputText.class);
+            NoteEditor.this.startActivity(intent);
+        }
+
+对导出文件界面进行布局，命名为output_text.xml  
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip"
+        android:paddingBottom="3dip">
+
+    <EditText
+        android:id="@+id/output_name"
+        android:maxLines="1"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="25"
+        android:autoText="true"
+        android:capitalize="sentences"
+        android:scrollHorizontally="true"/>
+
+    <Button
+        android:id="@+id/output_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/output_ok"
+        android:onClick="OutputOk"/>
+
+    </LinearLayout>
+创建OutputText的Acitvity，用来选择颜色。  
+
+      public class OutputText extends Activity {
+          private static final String[] PROJECTION=new String[]{
+                  NotePad.Notes._ID,
+                  NotePad.Notes.COLUMN_NAME_TITLE,
+                  NotePad.Notes.COLUMN_NAME_NOTE,
+                  NotePad.Notes.COLUMN_NAME_CREATE_DATE,
+                  NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
+          };
+          //读取出的值放入这些变量
+          private String TITLE;
+          private String NOTE;
+          private String CREATE_DATE;
+          private String MODIFICATION_DATE;
+          //读取该笔记信息
+          private Cursor mCursor;
+          //导出文件的名字
+          private EditText mName;
+          //NoteEditor传入的uri,用于从数据库查出该笔记
+          private Uri mUri;
+          //关于返回与保存按钮的一个特殊标记，返回的话不执行导出，点击按钮才导出
+          private boolean flag = false;
+          private static final int COLUMN_INDEX_TITLE = 1;
+          public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              setContentView(R.layout.output_text);
+              mUri = getIntent().getData();
+              mCursor = managedQuery(
+                      mUri,        // The URI for the note that is to be retrieved.
+                      PROJECTION,  // The columns to retrieve
+                      null,        // No selection criteria are used, so no where columns are needed.
+                      null,        // No where columns are used, so no where values are needed.
+                      null         // No sort order is needed.
+              );
+              mName = (EditText) findViewById(R.id.output_name);
+          }
+          @Override
+          protected void onResume(){
+              super.onResume();
+              if (mCursor != null) {
+                  // The Cursor was just retrieved, so its index is set to one record *before* the first
+                  // record retrieved. This moves it to the first record.
+                  mCursor.moveToFirst();
+                  //编辑框默认的文件名为标题，可自行更改
+                  mName.setText(mCursor.getString(COLUMN_INDEX_TITLE));
+              }
+          }
+          @Override
+          protected void onPause() {
+              super.onPause();
+              if (mCursor != null) {
+                  //从mCursor读取对应值
+                  TITLE = mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE));
+                  NOTE = mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE));
+                  CREATE_DATE = mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_CREATE_DATE));
+                  MODIFICATION_DATE = mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE));
+                  //flag在点击导出按钮时会设置为true，执行写文件
+                  if (flag == true) {
+                      write();
+                  }
+                  flag = false;
+              }
+          }
+          public void OutputOk(View v){
+              flag = true;
+              finish();
+          }
+          private void write()
+          {
+              try
+              {
+                  // 如果手机插入了SD卡，而且应用程序具有访问SD的权限
+                  if (Environment.getExternalStorageState().equals(
+                          Environment.MEDIA_MOUNTED)) {
+                      // 获取SD卡的目录
+                      File sdCardDir = Environment.getExternalStorageDirectory();
+                      //创建文件目录
+                      File targetFile = new File(sdCardDir.getCanonicalPath() + "/" + mName.getText() + ".txt");
+                      //写文件
+                      PrintWriter ps = new PrintWriter(new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8"));
+                      ps.println(TITLE);
+                      ps.println(NOTE);
+                      ps.println("创建时间：" + CREATE_DATE);
+                      ps.println("最后一次修改时间：" + MODIFICATION_DATE);
+                      ps.close();
+                      Toast.makeText(this, "保存成功,保存位置：" + sdCardDir.getCanonicalPath() + "/" + mName.getText() + ".txt", Toast.LENGTH_LONG).show();
+                  }
+              }
+              catch (Exception e)
+              {
+                  e.printStackTrace();
+              }
+          }
+      }
+
+AndroidManifest.xml中加入定义  
+
+     <activity android:name=".OutputText"
+              android:label="@string/output_name"
+              android:theme="@android:style/Theme.Holo.Light.Dialog"
+              android:windowSoftInputMode="stateVisible">
+
+          </activity>
+
+加上权限  
+
+     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS">
+
+     </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+
+设置了一个flag用于判断是否是点击导出按钮，是点击按钮，则flag设置为true，可以进行文件导出，否则flag为默认的false，判断语句为假，不能执行到导出文件的操作。  
+效果演示：  
+图6  
+
+(6)对笔记进行排序<br>
+   *按创建时间排序<br>
+   *按修改时间排序<br>
+   *按背景颜色排序<br>   
+   
+list_options_menu.xml中添加：  
+
+    <item
+            android:id="@+id/menu_sort"
+            android:title="@string/menu_sort"
+            android:icon="@drawable/ic_menu_sort"
+            android:showAsAction="always">
+            <menu>
+                <item
+                    android:id="@+id/menu_sort1"
+                    android:title="@string/menu_sort1"/>
+                <item
+                    android:id="@+id/menu_sort2"
+                    android:title="@string/menu_sort2"/>
+                <item
+                    android:id="@+id/menu_sort3"
+                    android:title="@string/menu_sort3"/>
+            </menu>
 
 
+        </item>  
+        
+在NoteList菜单switch下添加case：  
 
+    //创建时间排序
+        case R.id.menu_sort1:
+            cursor = managedQuery(
+                    getIntent().getData(),            
+                    PROJECTION,                      
+                    null,                          
+                    null,                          
+                    NotePad.Notes._ID 
+                    );
+            adapter = new MyCursorAdapter(
+                    this,
+                    R.layout.noteslist_item,
+                    cursor,
+                    dataColumns,
+                    viewIDs
+            );
+            setListAdapter(adapter);
+            return true;
+     //修改时间排序
+        case R.id.menu_sort2:
+            cursor = managedQuery(
+                    getIntent().getData(),          
+                    PROJECTION,                      
+                    null,                            
+                    null,                       
+                    NotePad.Notes.DEFAULT_SORT_ORDER 
+            );
+            adapter = new MyCursorAdapter(
+                    this,
+                    R.layout.noteslist_item,
+                    cursor,
+                    dataColumns,
+                    viewIDs
+            );
+            setListAdapter(adapter);
+            return true;
+        //颜色排序
+        case R.id.menu_sort3:
+            cursor = managedQuery(
+                    getIntent().getData(),
+                    PROJECTION,      
+                    null,       
+                    null,       
+                    NotePad.Notes.COLUMN_NAME_BACK_COLOR
+                    );
+            adapter = new MyCursorAdapter(
+                    this,
+                    R.layout.noteslist_item,
+                    cursor,
+                    dataColumns,
+                    viewIDs
+                    );
+            setListAdapter(adapter);
+            return true;  
+            
+效果演示：  
 
+图7  
 
+(7)选择字体大小与颜色<br>   
+在editor_options_menu.xml中添加：  
 
+     <item
+            android:id="@+id/font_size"
+            android:title="@string/font_size">
+            <!--子菜单-->
+            <menu>
+                <!--定义一组单选菜单项-->
+                <group>
+                    <!--定义多个菜单项-->
+                    <item
+                        android:id="@+id/font_10"
+                        android:title="@string/font10"
+                        />
 
+                <item
+                    android:id="@+id/font_16"
+                    android:title="@string/font16" />
+                <item
+                    android:id="@+id/font_20"
+                    android:title="@string/font20" />
+            </group>
+        </menu>
+    </item>
 
+    <item
+        android:title="@string/font_color"
+        android:id="@+id/font_color"
+        >
+        <menu>
+            <!--定义一组普通菜单项-->
+            <group>
+                <!--定义两个菜单项-->
+                <item
+                    android:id="@+id/red_font"
+                    android:title="@string/red_title" />
+                <item
+                    android:title="@string/black_title"
+                    android:id="@+id/black_font"/>
+            </group>
+        </menu>
+    </item>
 
+NteEditor.java中添加case:  
+
+    case R.id.font_10:
+
+                mText.setTextSize(20);
+                Toast toast =Toast.makeText(NoteEditor.this,"修改成功",Toast.LENGTH_SHORT);
+                toast.show();
+                /*finish();*/
+                break;
+
+        case R.id.font_16:
+                mText.setTextSize(32);
+                Toast toast2 =Toast.makeText(NoteEditor.this,"修改成功",Toast.LENGTH_SHORT);
+                toast2.show();
+               /* finish();*/
+                break;
+        case R.id.font_20:
+                mText.setTextSize(40);
+                Toast toast3 =Toast.makeText(NoteEditor.this,"修改成功",Toast.LENGTH_SHORT);
+                toast3.show();
+                /*finish();*/
+                break;
+        case R.id.red_font:
+                mText.setTextColor(Color.RED);
+                Toast toast4 =Toast.makeText(NoteEditor.this,"修改成功",Toast.LENGTH_SHORT);
+                toast4.show();
+                /*finish();*/
+                break;
+        case R.id.black_font:
+                mText.setTextColor(Color.BLACK);
+                Toast toast5 =Toast.makeText(NoteEditor.this,"修改成功",Toast.LENGTH_SHORT);
+                toast5.show();
+               /* finish();*/
+                break;
+其他步骤与背景颜色类似，代码省略。
+效果演示：  
+
+图8  
 
 
 
