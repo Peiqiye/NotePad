@@ -82,8 +82,7 @@
              String dateTime=format.format(date);
 运行效果为：  
 <p align="center">
-	<img src="https://github.com/Peiqiye/image/blob/master/1.png" alt="Sample"  width="350" height="540">
-	<img src="https://github.com/Peiqiye/image/blob/master/2.png" alt="Sample"  width="350" height="540">
+	<img src="https://github.com/Peiqiye/image/blob/master/时间戳.png" alt="Sample"  width="350" height="540">
 	<p align="center">
 		<em>总体界面</em>
 	</p>
