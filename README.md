@@ -13,7 +13,18 @@
    
 
 主要文件目录：<br>
-图1图2:文件目录两张<br>
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/主要文件.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>主要文件</em>
+	</p>
+</p>   
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/主要文件2.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>主要文件</em>
+	</p>
+</p> 
 扩展功能详细介绍<br>
 (1)显示NoteList时增加时间戳效果：在原有显示标题的基础下将时间戳显示出来。
 在noteslist_item.xml中再新增一个显示时间的TextView。线性布局就选用垂直布局，显示在标题下方就可以。(在这里我将显示的字体设置为蓝色)<br>
