@@ -81,7 +81,13 @@
              format.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
              String dateTime=format.format(date);
 运行效果为：  
-图片3  
+<p align="center">
+	<img src="https://github.com/Peiqiye/image/blob/master/1.png" alt="Sample"  width="350" height="540">
+	<img src="https://github.com/Peiqiye/image/blob/master/2.png" alt="Sample"  width="350" height="540">
+	<p align="center">
+		<em>总体界面</em>
+	</p>
+</p>  
 
 (2)查询功能（按名称查询）  
 首先在菜单栏增加搜索图标，点击图标进入搜索界面。在list_options_menu.xml增加一个item,搜索图标我用了自定义的图标，也可以用安卓自带的。  
